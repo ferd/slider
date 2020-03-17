@@ -1,0 +1,39 @@
+=== defaults ===
+text color: #ffffff
+type: base
+=== slides ===
+title: This is one of the slides
+subtitle: with a subtitle
+background: sloths.jpg
+---
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat nisl, rhoncus vel quam in, accumsan tincidunt leo. Vivamus condimentum congue sagittis. Vestibulum eget orci placerat, suscipit ligula ut, ullamcorper dui. Nunc consequat mattis feugiat. Maecenas convallis leo non mauris sagittis, eget convallis nisi venenatis. Integer facilisis gravida risus, in venenatis massa tempor sit amet. Quisque pharetra placerat elit pulvinar molestie. Sed pretium varius purus, ut pellentesque mi imperdiet at.
+
+Sed convallis tortor nibh, sit amet tempus libero pulvinar a. Sed rutrum facilisis elit eget ultricies. Vivamus ut urna ut erat convallis vestibulum et volutpat orci. Fusce a mi placerat, hendrerit lectus finibus, sagittis orci. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sed nisi et arcu viverra tempor. Nam blandit lorem sit amet consectetur tincidunt. Duis congue, nisi id fringilla blandit, dolor nunc sodales quam, vitae pretium tellus nunc sit amet nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet tortor tempor, faucibus augue sagittis, dignissim augue. Pellentesque in nisi nisl. Vivamus finibus molestie dolor ut pellentesque. Maecenas sit amet sem hendrerit, iaculis tortor et, mattis arcu. Suspendisse a pharetra est. Vestibulum ante tellus, suscipit sit amet sollicitudin ac, tincidunt ac purus. Suspendisse mattis, ante quis fringilla porta, libero diam maximus odio, nec lobortis est lorem sit amet erat.
+
+===
+title: Another slide
+subtitle: with sub-titles
+background: fire.png
+---
+Suspendisse porta in metus eget tincidunt. Maecenas venenatis at dolor quis rhoncus. Proin rutrum lorem at egestas cursus. Vestibulum condimentum hendrerit dolor. Mauris sapien velit, laoreet sed euismod sed, imperdiet ut leo. Suspendisse mauris orci, tempor eu dignissim sit amet, sagittis vitae arcu. Fusce pretium ornare nunc ac consectetur. Vivamus in tellus ac eros mattis facilisis eget in tellus. 
+
+===
+title: Third slide
+subtitle: Third subtitles
+background: control.jpg
+text color: #66FF66
+---
+Just say some things
+- this is one
+- this is another
+1. abc
+2. def
+
+===
+title: Here we go!
+subtitle: To the moon! 🌕
+background: wind.jpg
+text color: #000000
+---
+Checking for Unicode support: 👩‍👩‍👦‍👦
+This works hopefully
