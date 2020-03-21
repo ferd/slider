@@ -25,7 +25,7 @@ slides([], _N, _Defaults, _Opt, Acc) ->
 slides(["---" | Lines], N, Defaults, Opt, Acc) ->
     {Notes, Rest} = gather_notes(Lines),
     SlideOpts = maps:merge(Defaults, maps:without([type], Opt)),
-    Slide = maps:get(type, Opt, slider_base),
+    Slide = list_to_atom(maps:get(type, Opt, "slider_base")),
     SlideDefaults = slide_defaults(Slide),
     NewAcc = [{N, {Slide, maps:merge(SlideDefaults, SlideOpts)}, Notes} | Acc],
     slides(Rest, N+1, Defaults, #{}, NewAcc);
@@ -58,6 +58,11 @@ gather_notes([Line|Lines], Acc) ->
 slide_defaults(slider_base) ->
     #{title => "", subtitle => "",
       font => "Tisa OT", text_color => {16#00, 16#00, 16#00},
-      title_size => 80, subtitle_size => 55}.
+      title_size => 80, subtitle_size => 55};
+slide_defaults(slider_code) ->
+    #{title => "", source => "",
+      title_font => "Tisa OT", text_color => {16#00, 16#00, 16#00},
+      title_size => 80, source_size => 34,
+      source_font => "Fira Code"}.
 
 

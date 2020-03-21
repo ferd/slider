@@ -18,7 +18,7 @@ prepare(Config = #{parent := Parent,
     {W, H} = resolution(Parent),
 
     TitleFont = wxFont:new(
-        check_font_size(trunc(H*(TS/1000))),
+        slider_utils:check_font_size(trunc(H*(TS/1000))),
         ?wxFONTFAMILY_DEFAULT,
         ?wxFONTWEIGHT_NORMAL,
         ?wxFONTSTYLE_NORMAL,
@@ -26,7 +26,7 @@ prepare(Config = #{parent := Parent,
          {encoding, ?wxFONTENCODING_UNICODE}]
     ),
     SubTitleFont = wxFont:new(
-        check_font_size(trunc(H*(STS/1000))),
+        slider_utils:check_font_size(trunc(H*(STS/1000))),
         ?wxFONTFAMILY_DEFAULT,
         ?wxFONTWEIGHT_NORMAL,
         ?wxFONTSTYLE_NORMAL,
@@ -35,8 +35,8 @@ prepare(Config = #{parent := Parent,
     ),
     VBox = wxBoxSizer:new(?wxVERTICAL),
 
-    Img = wxImage:new(Path, [{type, bitmap_type(Path)}]),
-    Cropped = crop(Img),
+    Img = wxImage:new(Path, [{type, slider_utils:bitmap_type(Path)}]),
+    Cropped = slider_utils:crop(Img),
     wxImage:rescale(Cropped, W, H, [{quality, ?wxIMAGE_QUALITY_HIGH}]),
     Bmp = wxBitmap:new(Cropped),
     wxImage:destroy(Cropped),
@@ -80,13 +80,13 @@ display(Config = #{parent := Parent,
     wxStaticText:setForegroundColour(SubTitle, TxtColor),
 
     {TitleW, _} = wxStaticText:getBestSize(Title),
-    TPad = trunc((Width - TitleW)/2),
+    TPad = max(0, trunc((Width - TitleW)/2)),
     HTBox = wxBoxSizer:new(?wxHORIZONTAL),
     wxBoxSizer:addSpacer(HTBox, TPad),
     wxBoxSizer:add(HTBox, Title, [{flag, ?wxALIGN_CENTER bor ?wxEXPAND}]),
 
     {SubTitleW, _} = wxStaticText:getBestSize(SubTitle),
-    STPad = trunc((Width - SubTitleW)/2),
+    STPad = max(0, trunc((Width - SubTitleW)/2)),
     HSTBox = wxBoxSizer:new(?wxHORIZONTAL),
     wxBoxSizer:addSpacer(HSTBox, STPad),
     wxBoxSizer:add(HSTBox, SubTitle, [{flag, ?wxALIGN_CENTER bor ?wxEXPAND}]),
@@ -112,58 +112,3 @@ standby(Config = #{wx_title := Title,
 
 resolution(Parent) ->
     wxFrame:getSize(Parent).
-
-bitmap_type(Path) ->
-    case filename:extension(Path) of
-        ".jpg" -> ?wxBITMAP_TYPE_JPEG;
-        ".jpeg" -> ?wxBITMAP_TYPE_JPEG;
-        ".png" -> ?wxBITMAP_TYPE_PNG
-    end.
-
-crop(Img) ->
-    W = wxImage:getWidth(Img),
-    H = wxImage:getHeight(Img),
-    case largest_resolution({W,H}, {16,9}) of
-        {ok, Resolution = {NewW, NewH}} ->
-            {TopX, TopY} = center_corner({W,H}, Resolution),
-            wxImage:getSubImage(Img, {TopX, TopY, NewW, NewH});
-        {error, no_resolution} ->
-            Img
-    end.
-
-largest_resolution({X,Y}, Ratio) ->
-    try
-        [throw({RX, RY})
-         || {RX,RY} <- resolutions(Ratio),
-            RX =< X, RY =< Y],
-        {error, no_resolution}
-    catch
-        R -> {ok, R}
-    end.
-
-center_corner({AW,AH}, {BW, BH}) ->
-    {if AW - BW < 2 -> 0;
-        true -> trunc((AW-BW)/2)
-     end,
-     if AH - BH < 2 -> 0;
-        true -> trunc((AH-BH)/2)
-     end}.
-
-resolutions({16,9}) ->
-    [{15360, 8640}, % 16K UHD
-     {7680, 4320}, % 8K UHD
-     {5120, 2880}, % 5K
-     {4096, 2304},
-     {3840, 2160}, % 4K
-     {3200, 1800}, % QHD+
-     {2880, 1620},
-     {2560, 1440}, % QHD
-     {2048, 1152},
-     {1920, 1080}, % Full HD
-     {1600, 900},  % HD+
-     {1366, 768},  % WXGA
-     {1280, 720},  % HD
-     {1024, 576}].
-
-check_font_size(70) -> 69; % 70 is a magic value that means "default" ?!
-check_font_size(S) -> S.

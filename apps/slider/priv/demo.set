@@ -37,3 +37,12 @@ text color: #000000
 ---
 Checking for Unicode support: 👩‍👩‍👦‍👦
 This works hopefully
+
+===
+type: slider_code
+source: rebalance1.erl
+title: Rebalance
+background: sloths.jpg
+---
+This is part of the rebalancing of a treap
+
