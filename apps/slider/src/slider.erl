@@ -37,7 +37,7 @@ setup_() ->
     ),
     NoteFrame = wxFrame:new(Server, ?NOTE_ID, "Notes"),
     %% used to get key bindings
-    wxPanel:new(SlideFrame),
+    %wxPanel:new(SlideFrame),
     wxPanel:new(NoteFrame),
     SetBase = application:get_env(slider, set, code:priv_dir(slider)),
     file:set_cwd(SetBase),

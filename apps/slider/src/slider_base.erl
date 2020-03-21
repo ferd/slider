@@ -64,7 +64,7 @@ display(Config = #{parent := Parent,
 
     Bg = wxStaticBitmap:new(Parent, ?wxID_ANY, Bmp),
 
-    {_Width, Height} = resolution(Parent),
+    {Width, Height} = resolution(Parent),
 
     wxFrame:setSizer(Parent, VBox), % Parent will now clean up the VBox
     wxBoxSizer:addSpacer(VBox, trunc(2*Height/5)),
@@ -79,8 +79,20 @@ display(Config = #{parent := Parent,
     wxStaticText:setFont(SubTitle, SubTitleFont),
     wxStaticText:setForegroundColour(SubTitle, TxtColor),
 
-    wxBoxSizer:add(VBox, Title, [{flag, ?wxALIGN_CENTER bor ?wxEXPAND}]),
-    wxBoxSizer:add(VBox, SubTitle, [{flag, ?wxALIGN_CENTER bor ?wxEXPAND}]),
+    {TitleW, _} = wxStaticText:getBestSize(Title),
+    TPad = trunc((Width - TitleW)/2),
+    HTBox = wxBoxSizer:new(?wxHORIZONTAL),
+    wxBoxSizer:addSpacer(HTBox, TPad),
+    wxBoxSizer:add(HTBox, Title, [{flag, ?wxALIGN_CENTER bor ?wxEXPAND}]),
+
+    {SubTitleW, _} = wxStaticText:getBestSize(SubTitle),
+    STPad = trunc((Width - SubTitleW)/2),
+    HSTBox = wxBoxSizer:new(?wxHORIZONTAL),
+    wxBoxSizer:addSpacer(HSTBox, STPad),
+    wxBoxSizer:add(HSTBox, SubTitle, [{flag, ?wxALIGN_CENTER bor ?wxEXPAND}]),
+
+    wxBoxSizer:add(VBox, HTBox, [{flag, ?wxALIGN_CENTER bor ?wxEXPAND}]),
+    wxBoxSizer:add(VBox, HSTBox, [{flag, ?wxALIGN_CENTER bor ?wxEXPAND}]),
 
     Config#{wx_title => Title,
             wx_subtitle => SubTitle,
