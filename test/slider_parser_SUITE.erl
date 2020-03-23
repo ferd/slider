@@ -36,6 +36,13 @@ load(_Config) ->
             background := "wind.jpg",
             font := "Tisa OT", text_color := {16#00, 16#00, 16#00},
             title_size := 80, subtitle_size := 55}},
+         _},
+        {5,
+         {slider_code,
+          #{title := "Rebalance", title_font := "Tisa OT", title_size := 80,
+            text_color := {16#FF, 16#FF, 16#FF}, background := "sloths.jpg",
+            source := "rebalance1.erl", source_font := "Fira Code",
+            source_size := 24}},
          _}
        ],
        slider_parser:file(Cfg)

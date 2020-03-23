@@ -15,7 +15,7 @@
                data :: data()}).
 -type data() :: term().
 
--callback init(wx:wx_object(), slider:slide()) -> {ok, data()}.
+-callback init(wx:wx_object(), slider:slide_cfg()) -> {ok, data()}.
 -callback terminate(data()) -> term().
 -callback prepare(data()) -> data().
 -callback display(data()) -> data().
@@ -85,12 +85,19 @@ displayed(cast, standby, Data=#data{mod=Type, data=CbData}) ->
     NewCbData = Type:standby(CbData),
     {next_state, loaded, Data#data{data=NewCbData}};
 displayed({call, From}, resize, Data=#data{mod=Type, data=CbData}) ->
-    TmpCbData = Type:cleanup(CbData),
+    ClearCbData = Type:standby(CbData),
+    TmpCbData = Type:cleanup(ClearCbData),
     PrepCbData = Type:prepare(TmpCbData),
     NewCbData = Type:display(PrepCbData),
     {next_state, displayed, Data#data{data=NewCbData},
      [{reply, From, ok}]}.
 
-terminate(_Reason, _State, _Data) ->
-    %% TODO: force a VM rollback of all states to actually free up memory
+terminate(_Reason, displayed, #data{mod=Type, data=CbData}) ->
+    ClearCbData = Type:standby(CbData),
+    Type:cleanup(ClearCbData),
+    ok;
+terminate(_Reason, loaded, #data{mod=Type, data=CbData}) ->
+    Type:cleanup(CbData),
+    ok;
+terminate(_Reason, unloaded, _) ->
     ok.

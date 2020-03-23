@@ -24,8 +24,8 @@ slides([], _N, _Defaults, _Opt, Acc) ->
     lists:reverse(Acc);
 slides(["---" | Lines], N, Defaults, Opt, Acc) ->
     {Notes, Rest} = gather_notes(Lines),
-    SlideOpts = maps:merge(Defaults, maps:without([type], Opt)),
-    Slide = list_to_atom(maps:get(type, Opt, "slider_base")),
+    SlideOpts = maps:merge(maps:without([type], Defaults), maps:without([type], Opt)),
+    Slide = maps:get(type, Opt, slider_base),
     SlideDefaults = slide_defaults(Slide),
     NewAcc = [{N, {Slide, maps:merge(SlideDefaults, SlideOpts)}, Notes} | Acc],
     slides(Rest, N+1, Defaults, #{}, NewAcc);
@@ -38,12 +38,15 @@ handle(text_color, [$#,R1,R2,G1,G2,B1,B2], Map) ->
     Map#{text_color => {list_to_integer([R1,R2], 16),
                         list_to_integer([G1,G2], 16),
                         list_to_integer([B1,B2], 16)}};
-handle(title_size, Str, Map) ->
-    Map#{title_size => list_to_integer(Str)};
-handle(subtitle_size, Str, Map) ->
-    Map#{subtitle_size => list_to_integer(Str)};
+handle(type, Str, Map) ->
+    Map#{type => list_to_atom("slider_" ++ Str)};
 handle(Atom, Str, Map) ->
-    Map#{Atom => Str}.
+    try list_to_integer(Str) of
+        Int -> Map#{Atom => Int}
+    catch
+        error:badarg ->
+            Map#{Atom => Str}
+    end.
 
 gather_notes(Lines) ->
     gather_notes(Lines, []).

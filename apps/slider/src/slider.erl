@@ -2,18 +2,31 @@
 -export([setup/0]).
 %% TODO: check all files before start
 
--type slide() :: {slider_base, #{
+-type slide() :: {slider_base, base()}
+               | {slider_code, code()}.
+-type slide_cfg() :: base() | code(). % simpler typing for callbacks
+-type base() :: #{
                     title := unicode:chardata(),
                     subtitle := unicode:chardata(),
                     background := file:filename_all(),
-                    font => unicode:chardata(),
-                    text_color => color(),
-                    %% They're thousandths in 1..1000 for screen height!
-                    title_size => 1..1000,
-                    subtitle_size => 1..1000
-                  }}.
+                    font := unicode:chardata(),
+                    text_color := color(),
+                    title_size := font_size(),
+                    subtitle_size := font_size()
+                 }.
+-type code() :: #{
+                    title := unicode:chardata(),
+                    title_font := unicode:chardata(),
+                    source := unicode:chardata(),
+                    source_font := unicode:chardata(),
+                    background := file:filename_all(),
+                    text_color := color(),
+                    title_size := font_size(),
+                    source_size := font_size()
+                 }.
 -type color() :: {0..255, 0..255, 0..255}.
--export_type([slide/0, color/0]).
+-type font_size() :: 1..1000. % in 1/1000th of screen height, to allow auto-scaling
+-export_type([slide/0, slide_cfg/0, base/0, code/0, color/0]).
 
 -include_lib("wx/include/wx.hrl").
 -define(SLIDE_ID, 1).
@@ -25,6 +38,7 @@
 setup() ->
     spawn(fun() -> setup_() end).
 
+-spec setup_() -> no_return().
 setup_() ->
     Server = wx:new(),
     %Resolution = {1280, 720},
@@ -58,8 +72,7 @@ setup_() ->
     IDs =/= [] andalso slider_fsm:prepare(2),
     layout(Frames),
     slider_notes:start_link(NoteFrame, [{N, Note} || {N, _Slide, Note} <- Set]),
-    evt_loop(undefined, {{[], ID, IDs}, Frames}),
-    ok.
+    evt_loop(undefined, {{[], ID, IDs}, Frames}).
 
 evt_loop(undefined, Slides) ->
     receive

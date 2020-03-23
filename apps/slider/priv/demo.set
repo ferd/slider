@@ -39,8 +39,9 @@ Checking for Unicode support: 👩‍👩‍👦‍👦
 This works hopefully
 
 ===
-type: slider_code
+type: code
 source: rebalance1.erl
+source size: 24
 title: Rebalance
 background: sloths.jpg
 ---
