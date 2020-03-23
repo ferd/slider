@@ -53,9 +53,17 @@ setup_() ->
     %% used to get key bindings
     transparent_pane() andalso wxPanel:new(SlideFrame),
     wxPanel:new(NoteFrame),
-    SetBase = application:get_env(slider, set, code:priv_dir(slider)),
-    file:set_cwd(SetBase),
-    [SetFile|_] = filelib:wildcard(filename:join([SetBase, "*.set"])),
+
+    file:set_cwd(os:getenv("DECK_CWD", "./")),
+    SetFile = case filelib:wildcard("*.set") of
+        [CwdFile|_] ->
+            CwdFile;
+        [] ->
+            SetBase = application:get_env(slider, set, code:priv_dir(slider)),
+            file:set_cwd(SetBase),
+            [CfgFile|_] = filelib:wildcard(filename:join([SetBase, "*.set"])),
+            CfgFile
+    end,
     Set = slider_parser:file(SetFile),
     [slider_fsm:start_link(N, SlideFrame, Slide) || {N, Slide, _Note} <- Set],
     Frames = [SlideFrame, NoteFrame],

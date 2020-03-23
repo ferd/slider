@@ -77,7 +77,7 @@ Elixir falls back to ruby as it has a similar syntax
 ===
 type: code
 source: golang.go
-source size: 26
+source size: 24
 title: Golang
 background: sloths.jpg
 ---
