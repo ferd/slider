@@ -80,7 +80,7 @@ display(Config = #{parent := Parent,
     wxStaticText:setForegroundColour(Title, TxtColor),
 
     CodeW = Width-trunc(Width/100)*5,
-    CodeH = Height-trunc(Height/20)*5,
+    CodeH = Height-trunc(Height*(3/10)),
     Code = wxStyledTextCtrl:new(Parent, [{size, {CodeW, CodeH}}]),
     wxStyledTextCtrl:styleClearAll(Code),
     wxStyledTextCtrl:styleSetFont(Code, ?wxSTC_STYLE_DEFAULT, SrcFont),
