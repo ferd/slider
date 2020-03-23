@@ -43,7 +43,11 @@ load(_Config) ->
             text_color := {16#FF, 16#FF, 16#FF}, background := "sloths.jpg",
             source := "rebalance1.erl", source_font := "Fira Code",
             source_size := 24}},
-         _}
+         _},
+        {6, _Python, _},
+        {7, _Ruby, _},
+        {8, _Elixir, _},
+        {9, _Go, _}
        ],
        slider_parser:file(Cfg)
     ),

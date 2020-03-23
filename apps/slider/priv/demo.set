@@ -47,3 +47,38 @@ background: sloths.jpg
 ---
 This is part of the rebalancing of a treap
 
+===
+type: code
+source: hypothesis.py
+source size: 32
+title: Hypothesis
+background: sloths.jpg
+---
+Hypothesis is python's property-based testing tool of choice.
+
+===
+type: code
+source: ruby.py
+source size: 26
+title: Ruby Syntax Highlight
+background: sloths.jpg
+---
+Checking what we put together for Ruby
+
+===
+type: code
+source: elixir.ex
+source size: 26
+title: Elixir
+background: sloths.jpg
+---
+Elixir falls back to ruby as it has a similar syntax
+
+===
+type: code
+source: golang.go
+source size: 26
+title: Golang
+background: sloths.jpg
+---
+Go falls back to C as it has a somewhat similar syntax
