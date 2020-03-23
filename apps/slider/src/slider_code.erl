@@ -282,7 +282,7 @@ keywords_(python) ->
      "async", "elif", "if", "or", "yield"];
 keywords_(elixir) ->
     ["true", "false", "nil", "when", "and", "or", "not", "in",
-     "def", "defmodule", "if", "quote", "case", "with",
+     "def", "defp", "defmodule", "if", "quote", "case", "with",
      "fn", "do", "end", "catch", "rescue", "after", "else"];
 keywords_(ruby) ->
     ["BEGIN", "END", "alias", "and", "begin", "break", "case",

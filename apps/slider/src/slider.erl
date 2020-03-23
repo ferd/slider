@@ -41,13 +41,19 @@ setup() ->
 -spec setup_() -> no_return().
 setup_() ->
     Server = wx:new(),
-    %Resolution = {1280, 720},
-    Resolution = {1024, 576},
+    Resolution = case os:getenv("RESOLUTION") of
+        false ->
+            {1280, 720};
+            %{1024, 576},
+        StrRes ->
+            [WStr, HStr] = string:lexemes(StrRes, "x"),
+            {list_to_integer(WStr), list_to_integer(HStr)}
+    end,
     SlideFrame = wxFrame:new(
         Server, ?SLIDE_ID, "Slides",
         [{size, Resolution},
-         {style, ?wxMINIMIZE_BOX bor ?wxMAXIMIZE_BOX bor ?wxCLOSE_BOX bor
-          ?wxRESIZE_BORDER bor ?wxFRAME_TOOL_WINDOW bor ?wxWANTS_CHARS}]
+         {style, (?wxDEFAULT_FRAME_STYLE bor ?wxWANTS_CHARS)
+                 band (bnot ?wxSYSTEM_MENU)}]
     ),
     NoteFrame = wxFrame:new(Server, ?NOTE_ID, "Notes"),
     %% used to get key bindings
