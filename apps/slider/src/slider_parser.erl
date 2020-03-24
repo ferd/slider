@@ -68,6 +68,10 @@ slide_defaults(slider_base) ->
     #{title => "", subtitle => "",
       font => "Tisa OT", text_color => {16#00, 16#00, 16#00},
       title_size => 80, subtitle_size => 55};
+slide_defaults(slider_image) ->
+    #{title => "",
+      font => "Tisa OT", text_color => {16#00, 16#00, 16#00},
+      title_size => 80};
 slide_defaults(slider_code) ->
     #{title => "", source => "",
       title_font => "Tisa OT", text_color => {16#00, 16#00, 16#00},

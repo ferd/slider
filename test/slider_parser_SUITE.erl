@@ -47,7 +47,19 @@ load(_Config) ->
         {6, _Python, _},
         {7, _Ruby, _},
         {8, _Elixir, _},
-        {9, _Go, _}
+        {9, _Go, _},
+        {10,
+         {slider_image,
+          #{title := "vertical image", font := "Tisa OT",
+            title_size := 80, text_color := {16#FF, 16#FF, 16#FF},
+            image := "sloths.jpg", background := "fire.png"}},
+         _},
+        {11,
+         {slider_image,
+          #{title := "horizontal image", font := "Tisa OT",
+            title_size := 80, text_color := {16#FF, 16#FF, 16#FF},
+            image := "fire.png", background := "sloths.jpg"}},
+         _}
        ],
        slider_parser:file(Cfg)
     ),
