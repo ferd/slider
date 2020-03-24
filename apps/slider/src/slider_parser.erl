@@ -15,6 +15,8 @@ defaults(["=== defaults ==="|Rest]) ->
 
 defaults(["=== slides ===" | Lines], Defaults) ->
     slides(Lines, 1, Defaults, #{}, []);
+defaults(["//"++_ | Lines], Map) ->
+    defaults(Lines, Map);
 defaults([Line|Lines], Map) ->
     [KS, VS] = string:split(Line, ": "),
     K = list_to_atom(lists:append(string:replace(KS, " ", "_", all))),
@@ -29,6 +31,8 @@ slides(["---" | Lines], N, Defaults, Opt, Acc) ->
     SlideDefaults = slide_defaults(Slide),
     NewAcc = [{N, {Slide, maps:merge(SlideDefaults, SlideOpts)}, Notes} | Acc],
     slides(Rest, N+1, Defaults, #{}, NewAcc);
+slides(["//"++_ | Lines], N, Defaults, Opt, Acc) ->
+    slides(Lines, N, Defaults, Opt, Acc);
 slides([Line | Lines], N, Defaults, Opt, Acc) ->
     [KS, VS] = string:split(Line, ": "),
     K = list_to_atom(lists:append(string:replace(KS, " ", "_", all))),
@@ -55,6 +59,8 @@ gather_notes([], Acc) ->
     {lists:reverse(Acc), []};
 gather_notes(["==="|Lines], Acc) ->
     {lists:reverse(Acc), Lines};
+gather_notes(["//"++_|Lines], Acc) ->
+    gather_notes(Lines, Acc);
 gather_notes([Line|Lines], Acc) ->
     gather_notes(Lines, [io_lib:format("~ts~n", [Line]) | Acc]).
 

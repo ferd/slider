@@ -51,4 +51,9 @@ load(_Config) ->
        ],
        slider_parser:file(Cfg)
     ),
+    %% Comments are taken out
+    {2, {_Type, Map}, Notes} = lists:keyfind(2, 1, slider_parser:file(Cfg)),
+    ?assertEqual(nomatch, re:run(Notes, "//", [multiline])),
+    ?assertEqual(undefined, maps:get('//text_color', Map, undefined)),
+    ?assertEqual(undefined, maps:get('//subtitle', Map, undefined)),
     ok.

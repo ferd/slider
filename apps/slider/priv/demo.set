@@ -1,6 +1,7 @@
 === defaults ===
 text color: #ffffff
 type: base
+//text color: ignored
 === slides ===
 title: This is one of the slides
 subtitle: with a subtitle
@@ -13,10 +14,19 @@ Sed convallis tortor nibh, sit amet tempus libero pulvinar a. Sed rutrum facilis
 ===
 title: Another slide
 subtitle: with sub-titles
+//subtitle: ignored
 background: fire.png
 ---
 Suspendisse porta in metus eget tincidunt. Maecenas venenatis at dolor quis rhoncus. Proin rutrum lorem at egestas cursus. Vestibulum condimentum hendrerit dolor. Mauris sapien velit, laoreet sed euismod sed, imperdiet ut leo. Suspendisse mauris orci, tempor eu dignissim sit amet, sagittis vitae arcu. Fusce pretium ornare nunc ac consectetur. Vivamus in tellus ac eros mattis facilisis eget in tellus. 
 
+// A commented out slide
+// ===
+// title: Another slide
+// subtitle: with sub-titles
+// background: fire.png
+// ---
+// Suspendisse porta in metus eget tincidunt. Maecenas venenatis at dolor quis rhoncus. Proin rutrum lorem at egestas cursus. Vestibulum condimentum hendrerit dolor. Mauris sapien velit, laoreet sed euismod sed, imperdiet ut leo. Suspendisse mauris orci, tempor eu dignissim sit amet, sagittis vitae arcu. Fusce pretium ornare nunc ac consectetur. Vivamus in tellus ac eros mattis facilisis eget in tellus. 
+//
 ===
 title: Third slide
 subtitle: Third subtitles
