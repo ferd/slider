@@ -92,3 +92,19 @@ title: Golang
 background: sloths.jpg
 ---
 Go falls back to C as it has a somewhat similar syntax
+
+===
+type: image
+title: vertical image
+image: sloths.jpg
+background: fire.png
+---
+auto-resize should work
+
+===
+type: image
+title: horizontal image
+image: fire.png
+background: sloths.jpg
+---
+auto-resize should work

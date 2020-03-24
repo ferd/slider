@@ -3,8 +3,9 @@
 %% TODO: check all files before start
 
 -type slide() :: {slider_base, base()}
-               | {slider_code, code()}.
--type slide_cfg() :: base() | code(). % simpler typing for callbacks
+               | {slider_code, code()}
+               | {slider_image, image()}.
+-type slide_cfg() :: base() | code() | image(). % simpler typing for callbacks
 -type base() :: #{
                     title := unicode:chardata(),
                     subtitle := unicode:chardata(),
@@ -24,9 +25,17 @@
                     title_size := font_size(),
                     source_size := font_size()
                  }.
+-type image() :: #{
+                    title := unicode:chardata(),
+                    background := file:filename_all(),
+                    image := file:filename_all(),
+                    font := unicode:chardata(),
+                    text_color := color(),
+                    title_size := font_size()
+                 }.
 -type color() :: {0..255, 0..255, 0..255}.
 -type font_size() :: 1..1000. % in 1/1000th of screen height, to allow auto-scaling
--export_type([slide/0, slide_cfg/0, base/0, code/0, color/0]).
+-export_type([slide/0, slide_cfg/0, base/0, code/0, color/0, image/0]).
 
 -include_lib("wx/include/wx.hrl").
 -define(SLIDE_ID, 1).
