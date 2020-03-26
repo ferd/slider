@@ -107,6 +107,7 @@ Stuff that still sucks
 ----------------------
 
 - There's a bunch of god damn flicker/jitter when switching slides and stuff redraws to realign text that I don't yet know how to get rid of but I figure it's less bad than most slide animations out there anyway
+- When you use zoom or hangouts to stream and the slide window isn't in focus, the videoconferencing software does not always pick up the changes, so I'll probably need to play with a focus-toggling command to make sure it works properly.
 - Haven't tested the build on Windows, which is sure to need a bunch of patching
 - The OSX build seems to start both the notes a slide panes as tabs of the same window and you need to pop the note pane out manually; not using the flags that cause this makes the window not "selectable" by screenshare software (hangouts, zoom) on at least Linux.
 - Nightmode on OSX clashes with the notes' panes default style
