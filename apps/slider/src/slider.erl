@@ -90,6 +90,7 @@ setup_() ->
     %wxFrame:connect(SlideFrame, key_down),
     %wxFrame:connect(SlideFrame, key_up),
     [ID|IDs] = [N || {N, _Slide, _Note} <- Set],
+    freeze(Frames),
     slider_fsm:prepare(1),
     slider_fsm:display(1),
     IDs =/= [] andalso slider_fsm:prepare(2),
@@ -110,40 +111,44 @@ evt_loop(Prev, Slides) ->
         evt_loop(undefined, NewSlides)
     end.
 
-handle_evt(#wx{id=?SLIDE_ID, event=#wxSize{size={_W, _H}}}, Slides) ->
+handle_evt(#wx{id=?SLIDE_ID, event=#wxSize{size={_W, _H}}}, {Slides,Frames}) ->
+    freeze(Frames),
     resize(Slides),
-    Slides;
-handle_evt(#wx{id=_, event=#wxKey{keyCode=?LEFT_ARROW}}, Slides) ->
-    shift_left(Slides);
-handle_evt(#wx{id=_, event=#wxKey{keyCode=?RIGHT_ARROW}}, Slides) ->
-    shift_right(Slides);
-handle_evt(#wx{id=_, event=#wxKey{keyCode=_}}, Slides) ->
+    layout(Frames),
+    {Slides,Frames};
+handle_evt(#wx{id=_, event=#wxKey{keyCode=?LEFT_ARROW}}, {Slides,Frames}) ->
+    freeze(Frames),
+    NewSlides = shift_left(Slides),
+    layout(Frames),
+    {NewSlides, Frames};
+handle_evt(#wx{id=_, event=#wxKey{keyCode=?RIGHT_ARROW}}, {Slides,Frames}) ->
+    freeze(Frames),
+    NewSlides = shift_right(Slides),
+    layout(Frames),
+    {NewSlides, Frames};
+handle_evt(#wx{id=_, event=#wxKey{keyCode=_}}, State) ->
     %% ignore this key binding
-    Slides;
-handle_evt(Other, Slides) ->
-    io:format("unknown event ~p~n", [Other]),
-    Slides.
-
-resize({{[], Current, []}, Frames}) ->
-    slider_fsm:resize(Current),
-    layout(Frames);
-resize({{[Prev|_], Current, []}, Frames}) ->
-    slider_fsm:resize(Prev),
-    slider_fsm:resize(Current),
-    layout(Frames);
-resize({{[], Current, [Next|_]}, Frames}) ->
-    slider_fsm:resize(Next),
-    slider_fsm:resize(Current),
-    layout(Frames);
-resize({{[Prev|_], Current, [Next|_]}, Frames}) ->
-    slider_fsm:resize(Next),
-    slider_fsm:resize(Prev),
-    slider_fsm:resize(Current),
-    layout(Frames).
-
-shift_left({{[], _, _}, _} = State) ->
     State;
-shift_left({{[Prev|Ps], Current, []}, Frames}) ->
+handle_evt(Other, State) ->
+    io:format("unknown event ~p~n", [Other]),
+    State.
+
+resize({[], Current, []}) ->
+    slider_fsm:resize(Current);
+resize({[Prev|_], Current, []}) ->
+    slider_fsm:resize(Prev),
+    slider_fsm:resize(Current);
+resize({[], Current, [Next|_]}) ->
+    slider_fsm:resize(Next),
+    slider_fsm:resize(Current);
+resize({[Prev|_], Current, [Next|_]}) ->
+    slider_fsm:resize(Next),
+    slider_fsm:resize(Prev),
+    slider_fsm:resize(Current).
+
+shift_left({[], _, _} = State) ->
+    State;
+shift_left({[Prev|Ps], Current, []}) ->
     slider_fsm:standby(Current),
     case Ps of
         [NewPrev|_] -> slider_fsm:prepare(NewPrev);
@@ -151,9 +156,8 @@ shift_left({{[Prev|Ps], Current, []}, Frames}) ->
     end,
     slider_fsm:display(Prev),
     slider_notes:display(Prev),
-    layout(Frames),
-    {{Ps, Prev, [Current]}, Frames};
-shift_left({{[Prev|Ps], Current, [Next|Ns]}, Frames}) ->
+    {Ps, Prev, [Current]};
+shift_left({[Prev|Ps], Current, [Next|Ns]}) ->
     slider_fsm:standby(Current),
     slider_fsm:cleanup(Next),
     case Ps of
@@ -162,12 +166,11 @@ shift_left({{[Prev|Ps], Current, [Next|Ns]}, Frames}) ->
     end,
     slider_fsm:display(Prev),
     slider_notes:display(Prev),
-    layout(Frames),
-    {{Ps, Prev, [Current,Next|Ns]}, Frames}.
+    {Ps, Prev, [Current,Next|Ns]}.
 
-shift_right({{_, _, []}, _} = State) ->
+shift_right({_, _, []} = State) ->
     State;
-shift_right({{[], Current, [Next|Ns]}, Frames}) ->
+shift_right({[], Current, [Next|Ns]}) ->
     slider_fsm:standby(Current),
     case Ns of
         [NewNext|_] -> slider_fsm:prepare(NewNext);
@@ -175,9 +178,8 @@ shift_right({{[], Current, [Next|Ns]}, Frames}) ->
     end,
     slider_fsm:display(Next),
     slider_notes:display(Next),
-    layout(Frames),
-    {{[Current], Next, Ns}, Frames};
-shift_right({{[Prev|Ps], Current, [Next|Ns]}, Frames}) ->
+    {[Current], Next, Ns};
+shift_right({[Prev|Ps], Current, [Next|Ns]}) ->
     slider_fsm:standby(Current),
     slider_fsm:cleanup(Prev),
     case Ns of
@@ -186,15 +188,19 @@ shift_right({{[Prev|Ps], Current, [Next|Ns]}, Frames}) ->
     end,
     slider_fsm:display(Next),
     slider_notes:display(Next),
-    layout(Frames),
-    {{[Current,Prev|Ps], Next, Ns}, Frames}.
+    {[Current,Prev|Ps], Next, Ns}.
 
 show(List) ->
     [wxFrame:show(Obj) || Obj <- List],
     ok.
 
+freeze(List) ->
+    [wxWindow:freeze(Obj) || Obj <- List],
+    ok.
+
 layout(List) ->
     [wxFrame:layout(Obj) || Obj <- List],
+    [wxWindow:thaw(Obj) || Obj <- List],
     ok.
 
 -ifdef(TRANSPARENT_PANE).
