@@ -83,6 +83,7 @@ setup_() ->
     [slider_fsm:start_link(N, SlideFrame, Slide) || {N, Slide, _Note} <- Set],
     Frames = [SlideFrame, NoteFrame],
     show(Frames),
+    wxFrame:connect(NoteFrame, size),
     wxFrame:connect(SlideFrame, size),
     wxFrame:connect(SlideFrame, char_hook),
     wxFrame:connect(NoteFrame, char_hook),
@@ -116,6 +117,11 @@ handle_evt(#wx{id=?SLIDE_ID, event=#wxSize{size={_W, _H}}}, {Slides,Frames}) ->
     resize(Slides),
     layout(Frames),
     {Slides,Frames};
+handle_evt(#wx{id=?NOTE_ID, event=#wxSize{size={_W, _H}}}, {Slides,Frames}) ->
+    freeze(Frames),
+    resize_notes(Slides),
+    layout(Frames),
+    {Slides,Frames};
 handle_evt(#wx{id=_, event=#wxKey{keyCode=?LEFT_ARROW}}, {Slides,Frames}) ->
     freeze(Frames),
     NewSlides = shift_left(Slides),
@@ -145,6 +151,9 @@ resize({[Prev|_], Current, [Next|_]}) ->
     slider_fsm:resize(Next),
     slider_fsm:resize(Prev),
     slider_fsm:resize(Current).
+
+resize_notes({_Prev, Current, _Next}) ->
+    slider_notes:display(Current).
 
 shift_left({[], _, _} = State) ->
     State;

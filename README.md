@@ -106,12 +106,11 @@ Here are some of the rendered slides:
 Stuff that still sucks
 ----------------------
 
-- When you use zoom to stream and the slide window isn't in focus, the videoconferencing software does not always pick up the changes (hangouts is fine).
+- When you use zoom to stream and the slide window isn't in focus, the zoom videoconferencing software does not always pick up the changes (hangouts is fine).
 - Haven't tested the build on Windows, which is sure to need a bunch of patching
 - The OSX build seems to start both the notes a slide panes as tabs of the same window and you need to pop the note pane out manually; not using the flags that cause this makes the window not "selectable" by screenshare software (hangouts, zoom) on at least Linux.
 - Nightmode on OSX clashes with the notes' panes default style
 - The notes pane on linux includes the size of the title bar in its size so that sometimes truncates the last line of notes halfway through
-- The notes don't resize themselves when the window is dragged because I haven't hooked the event handler for it yet
 - Haven't looked to make fonts portable yet so the portability part of this software is not fully there yet
 - if you close one of the windows you gotta reboot the whole freaking thing to bring em back
 - I picked "thousandths of screen height" for font-size so it scales with window size and it works but it's completely unintuitive
