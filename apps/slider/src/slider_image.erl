@@ -28,10 +28,9 @@ prepare(Config = #{parent := Parent,
     VBox = wxBoxSizer:new(?wxVERTICAL),
 
     Img = wxImage:new(Path, [{type, slider_utils:bitmap_type(Path)}]),
-    Cropped = slider_utils:crop(Img),
-    wxImage:rescale(Cropped, W, H, [{quality, ?wxIMAGE_QUALITY_HIGH}]),
-    Bmp = wxBitmap:new(Cropped),
-    wxImage:destroy(Cropped),
+    slider_utils:crop(Img),
+    wxImage:rescale(Img, W, H, [{quality, ?wxIMAGE_QUALITY_HIGH}]),
+    Bmp = wxBitmap:new(Img),
     wxImage:destroy(Img),
 
     FgImg = wxImage:new(ImgPath, [{type, slider_utils:bitmap_type(ImgPath)}]),
