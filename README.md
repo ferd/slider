@@ -106,7 +106,6 @@ Here are some of the rendered slides:
 Stuff that still sucks
 ----------------------
 
-- When you use zoom to stream and the slide window isn't in focus, the zoom videoconferencing software does not always pick up the changes (hangouts is fine).
 - Haven't tested the build on Windows, which is sure to need a bunch of patching
 - The OSX build seems to start both the notes a slide panes as tabs of the same window and you need to pop the note pane out manually; not using the flags that cause this makes the window not "selectable" by screenshare software (hangouts, zoom) on at least Linux.
 - Nightmode on OSX clashes with the notes' panes default style
