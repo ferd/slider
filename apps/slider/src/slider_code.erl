@@ -164,7 +164,7 @@ styles(erlang) ->
      {?wxSTC_ERLANG_CHARACTER,         ?CLR_CHAR},
      {?wxSTC_ERLANG_MACRO,             ?CLR_MACRO},
      {?wxSTC_ERLANG_RECORD,            ?CLR_RECORD},
-     {?wxSTC_ERLANG_SEPARATOR,         ?CLR_DEFAULT},
+     %{?wxSTC_ERLANG_SEPARATOR,         ?CLR_DEFAULT},
      {?wxSTC_ERLANG_NODE_NAME,         ?CLR_DEFAULT},
      %% Optional 2.9 stuff
      {?wxSTC_ERLANG_COMMENT_FUNCTION,  ?CLR_COMMENT},
