@@ -90,7 +90,10 @@ displayed({call, From}, resize, Data=#data{mod=Type, data=CbData}) ->
     PrepCbData = Type:prepare(TmpCbData),
     NewCbData = Type:display(PrepCbData),
     {next_state, displayed, Data#data{data=NewCbData},
-     [{reply, From, ok}]}.
+     [{reply, From, ok}]};
+displayed(info, {'_wxe_error_',_,Call,Args}, _Data) ->
+    io:format("Wx Error: ~p ~p~n", [Call, Args]),
+    keep_state_and_data.
 
 terminate(_Reason, displayed, #data{mod=Type, data=CbData}) ->
     ClearCbData = Type:standby(CbData),
