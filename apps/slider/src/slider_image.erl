@@ -100,14 +100,14 @@ display(Config = #{parent := Parent,
     TPad = max(0, trunc((Width - TitleW)/2)),
     HTBox = wxBoxSizer:new(?wxHORIZONTAL),
     wxBoxSizer:addSpacer(HTBox, TPad),
-    wxBoxSizer:add(HTBox, Title, [{flag, ?wxALIGN_CENTER bor ?wxEXPAND}]),
+    wxBoxSizer:add(HTBox, Title, [{flag, ?wxEXPAND}]),
 
     TitlePad = TitleSpacerSize + TitleH,
     FgX = max(0, trunc((Width - wxBitmap:getWidth(FgBmp))/2)),
     FgY = max(0, TitlePad + trunc(((Height-TitlePad) - wxBitmap:getHeight(FgBmp))/3)),
     Fg = wxStaticBitmap:new(Parent, ?wxID_ANY, FgBmp, [{pos, {FgX, FgY}}]),
 
-    wxBoxSizer:add(VBox, HTBox, [{flag, ?wxALIGN_CENTER bor ?wxEXPAND}]),
+    wxBoxSizer:add(VBox, HTBox, [{flag, ?wxEXPAND}]),
 
     Config#{wx_title => Title,
             wx_fg => Fg,
