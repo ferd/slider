@@ -43,6 +43,9 @@
 -define(NOTE_ID, 3).
 -define(LEFT_ARROW, 314).
 -define(RIGHT_ARROW, 316).
+%% used by presentation remotes
+-define(PAGE_UP, 366).
+-define(PAGE_DOWN, 367).
 
 setup() ->
     spawn(fun() -> setup_() end).
@@ -128,6 +131,17 @@ handle_evt(#wx{id=_, event=#wxKey{keyCode=?LEFT_ARROW}}, {Slides,Frames}) ->
     layout(Frames),
     {NewSlides, Frames};
 handle_evt(#wx{id=_, event=#wxKey{keyCode=?RIGHT_ARROW}}, {Slides,Frames}) ->
+    freeze(Frames),
+    NewSlides = shift_right(Slides),
+    layout(Frames),
+    {NewSlides, Frames};
+%% Same as left/right arrows but for presenter remotes.
+handle_evt(#wx{id=_, event=#wxKey{keyCode=?PAGE_UP}}, {Slides,Frames}) ->
+    freeze(Frames),
+    NewSlides = shift_left(Slides),
+    layout(Frames),
+    {NewSlides, Frames};
+handle_evt(#wx{id=_, event=#wxKey{keyCode=?PAGE_DOWN}}, {Slides,Frames}) ->
     freeze(Frames),
     NewSlides = shift_right(Slides),
     layout(Frames),
