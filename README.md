@@ -107,7 +107,6 @@ Stuff that still sucks
 ----------------------
 
 - Haven't tested the build on Windows, which is sure to need a bunch of patching
-- The OSX build seems to start both the notes a slide panes as tabs of the same window and you need to pop the note pane out manually; not using the flags that cause this makes the window not "selectable" by screenshare software (hangouts, zoom) on at least Linux.
 - Nightmode on OSX clashes with the notes' panes default style
 - The notes pane on linux includes the size of the title bar in its size so that sometimes truncates the last line of notes halfway through
 - Haven't looked to make fonts portable yet so the portability part of this software is not fully there yet
