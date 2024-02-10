@@ -34,9 +34,13 @@ slides(["---" | Lines], N, Defaults, Opt, Acc) ->
 slides(["//"++_ | Lines], N, Defaults, Opt, Acc) ->
     slides(Lines, N, Defaults, Opt, Acc);
 slides([Line | Lines], N, Defaults, Opt, Acc) ->
-    [KS, VS] = string:split(Line, ": "),
-    K = list_to_atom(lists:append(string:replace(KS, " ", "_", all))),
-    slides(Lines, N, Defaults, handle(K, VS, Opt), Acc).
+    case string:split(Line, ": ") of
+        [KS, VS] ->
+            K = list_to_atom(lists:append(string:replace(KS, " ", "_", all))),
+            slides(Lines, N, Defaults, handle(K, VS, Opt), Acc);
+        _ ->
+            error({invalid_config, {slide, N}, Line})
+    end.
 
 handle(Key, [$#,R1,R2,G1,G2,B1,B2], Map) ->
     Map#{Key => {list_to_integer([R1,R2], 16),
