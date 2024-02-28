@@ -67,9 +67,16 @@ setup_() ->
          {style, (?wxDEFAULT_FRAME_STYLE bor ?wxWANTS_CHARS)
                  band (bnot ?wxSYSTEM_MENU)}]
     ),
+    PreviewFrame = wxFrame:new(
+        Server, ?PREVIEW_ID, "Preview",
+        [{size, {640, 360}},
+         {style, (?wxDEFAULT_FRAME_STYLE bor ?wxWANTS_CHARS)
+                 band (bnot ?wxSYSTEM_MENU)}]
+    ),
     NoteFrame = wxFrame:new(Server, ?NOTE_ID, "Notes"),
     %% used to get key bindings
     transparent_pane() andalso wxPanel:new(SlideFrame),
+    transparent_pane() andalso wxPanel:new(PreviewFrame),
     wxPanel:new(NoteFrame),
 
     file:set_cwd(os:getenv("DECK_CWD", "./")),
@@ -84,12 +91,15 @@ setup_() ->
     end,
     Set = slider_parser:file(SetFile),
     [slider_fsm:start_link(N, SlideFrame, Slide) || {N, Slide, _Note} <- Set],
-    Frames = [SlideFrame, NoteFrame],
+    [slider_fsm:start_link({preview, N}, PreviewFrame, Slide) || {N, Slide, _Note} <- Set],
+    Frames = [SlideFrame, PreviewFrame, NoteFrame],
     show(Frames),
     wxFrame:connect(NoteFrame, size),
     wxFrame:connect(SlideFrame, size),
     wxFrame:connect(SlideFrame, char_hook),
     wxFrame:connect(NoteFrame, char_hook),
+    wxFrame:connect(PreviewFrame, size),
+    wxFrame:connect(PreviewFrame, char_hook),
     %wxFrame:connect(SlideFrame, char),
     %wxFrame:connect(SlideFrame, key_down),
     %wxFrame:connect(SlideFrame, key_up),
@@ -97,7 +107,10 @@ setup_() ->
     freeze(Frames),
     slider_fsm:prepare(1),
     slider_fsm:display(1),
+    slider_fsm:prepare({preview,1}),
+    slider_fsm:display({preview,1}),
     IDs =/= [] andalso slider_fsm:prepare(2),
+    IDs =/= [] andalso slider_fsm:prepare({preview,2}),
     layout(Frames),
     slider_notes:start_link(NoteFrame, [{N, Note} || {N, _Slide, Note} <- Set]),
     evt_loop(undefined, {{[], ID, IDs}, Frames}).
@@ -116,6 +129,11 @@ evt_loop(Prev, Slides) ->
     end.
 
 handle_evt(#wx{id=?SLIDE_ID, event=#wxSize{size={_W, _H}}}, {Slides,Frames}) ->
+    freeze(Frames),
+    resize(Slides),
+    layout(Frames),
+    {Slides,Frames};
+handle_evt(#wx{id=?PREVIEW_ID, event=#wxSize{size={_W, _H}}}, {Slides,Frames}) ->
     freeze(Frames),
     resize(Slides),
     layout(Frames),
@@ -154,14 +172,22 @@ handle_evt(Other, State) ->
     State.
 
 resize({[], Current, []}) ->
+    slider_fsm:resize({preview, Current}),
     slider_fsm:resize(Current);
 resize({[Prev|_], Current, []}) ->
+    slider_fsm:resize({preview, Prev}),
+    slider_fsm:resize({preview, Current}),
     slider_fsm:resize(Prev),
     slider_fsm:resize(Current);
 resize({[], Current, [Next|_]}) ->
+    slider_fsm:resize({preview, Next}),
+    slider_fsm:resize({preview, Current}),
     slider_fsm:resize(Next),
     slider_fsm:resize(Current);
 resize({[Prev|_], Current, [Next|_]}) ->
+    slider_fsm:resize({preview, Next}),
+    slider_fsm:resize({preview, Prev}),
+    slider_fsm:resize({preview, Current}),
     slider_fsm:resize(Next),
     slider_fsm:resize(Prev),
     slider_fsm:resize(Current).
@@ -173,20 +199,31 @@ shift_left({[], _, _} = State) ->
     State;
 shift_left({[Prev|Ps], Current, []}) ->
     slider_fsm:standby(Current),
+    slider_fsm:standby({preview, Current}),
     case Ps of
-        [NewPrev|_] -> slider_fsm:prepare(NewPrev);
-        _ -> ok
+        [NewPrev|_] ->
+            slider_fsm:prepare({preview, NewPrev}),
+            slider_fsm:prepare(NewPrev);
+        _ ->
+            ok
     end,
     slider_fsm:display(Prev),
+    slider_fsm:display({preview, Prev}),
     slider_notes:display(Prev),
     {Ps, Prev, [Current]};
 shift_left({[Prev|Ps], Current, [Next|Ns]}) ->
     slider_fsm:standby(Current),
+    slider_fsm:standby({preview, Current}),
     slider_fsm:cleanup(Next),
+    slider_fsm:cleanup({preview, Next}),
     case Ps of
-        [NewPrev|_] -> slider_fsm:prepare(NewPrev);
-        _ -> ok
+        [NewPrev|_] ->
+            slider_fsm:prepare({preview, NewPrev}),
+            slider_fsm:prepare(NewPrev);
+        _ ->
+            ok
     end,
+    slider_fsm:display({preview, Prev}),
     slider_fsm:display(Prev),
     slider_notes:display(Prev),
     {Ps, Prev, [Current,Next|Ns]}.
@@ -195,21 +232,32 @@ shift_right({_, _, []} = State) ->
     State;
 shift_right({[], Current, [Next|Ns]}) ->
     slider_fsm:standby(Current),
+    slider_fsm:standby({preview, Current}),
     case Ns of
-        [NewNext|_] -> slider_fsm:prepare(NewNext);
-        _ -> ok
+        [NewNext|_] ->
+            slider_fsm:prepare({preview, NewNext}),
+            slider_fsm:prepare(NewNext);
+        _ ->
+            ok
     end,
     slider_fsm:display(Next),
+    slider_fsm:display({preview, Next}),
     slider_notes:display(Next),
     {[Current], Next, Ns};
 shift_right({[Prev|Ps], Current, [Next|Ns]}) ->
     slider_fsm:standby(Current),
+    slider_fsm:standby({preview, Current}),
     slider_fsm:cleanup(Prev),
+    slider_fsm:cleanup({preview, Prev}),
     case Ns of
-        [NewNext|_] -> slider_fsm:prepare(NewNext);
-        _ -> ok
+        [NewNext|_] ->
+            slider_fsm:prepare({preview, NewNext}),
+            slider_fsm:prepare(NewNext);
+        _ ->
+            ok
     end,
     slider_fsm:display(Next),
+    slider_fsm:display({preview, Next}),
     slider_notes:display(Next),
     {[Current,Prev|Ps], Next, Ns}.
 
