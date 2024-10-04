@@ -114,6 +114,7 @@ Stuff that still sucks
 - I picked "thousandths of screen height" for font-size so it scales with window size and it works but it's completely unintuitive
 - font sizes turn out to look different across platforms and need fixing
 - wouldn't be surprised if there were memory leaks in there
+- the preview mode shows the current slide (in case you don't have a monitor display and can't mirror screens to show notes) but not future/previous slides
 - the code is messy
 
 Things I have not started figuring out (and may never do)
@@ -121,7 +122,7 @@ Things I have not started figuring out (and may never do)
 
 - reloading of slide descriptions when editing them
 - adding more languages to syntax highlight (currently: Erlang, Python, Ruby, C/C++, Elixir (via Ruby), Go (via C))
-- proper preview mode with small versions of slides
+- proper preview mode with small versions of prev/next slides
 - testing with a clicker for event registration
 - using comments in code to load a subset of a file like in asciidoctor
 - would be nice to automatically make text fit the boxes available in terms of size
